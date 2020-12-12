@@ -1,4 +1,4 @@
-from .models import UserProfile
+from .models import UserProfile,Banner
 import xadmin
 from xadmin import views
 
@@ -25,7 +25,12 @@ class UserProfileAdmin(object):
     list_editable = ['mobile']  #编辑字段
     # refresh_times = [3,5]
 
+class BannerAdmin(object):
+    list_display = ['title', 'image','index', 'add_time']
+    search_fields = ['title', 'image','index']
+    list_filter = ['title', 'image','index', 'add_time']
 
+xadmin.site.register(Banner,BannerAdmin)
 xadmin.site.unregister(UserProfile)
 xadmin.site.register(UserProfile,UserProfileAdmin)
 xadmin.site.register(views.CommAdminView,GlobalSettings)

@@ -95,6 +95,8 @@ class OrgHomeView(View):
         current_page = 'home'
         # 根据id找到课程机构
         course_org = CourseOrg.objects.get(id=int(org_id))
+        course_org.click_nums += 1
+        course_org.save()
         # 判断收藏状态
         has_fav = False
         if request.user.is_authenticated:
@@ -189,6 +191,24 @@ class AddFavView(View):
         if exist_record:
             # 如果记录已经存在，表示用户取消收藏
             exist_record.delete()
+            if int(fav_type) == 1:
+                course = Course.objects.get(id=int(fav_id))
+                course.fav_nums -= 1
+                if course.fav_nums < 0:
+                    course.fav_nums = 0
+                course.save()
+            elif int(fav_type) == 2:
+                org = CourseOrg.objects.get(id=int(fav_id))
+                org.fav_nums -= 1
+                if org.fav_nums < 0:
+                    org.fav_nums = 0
+                org.save()
+            elif int(fav_type) == 3:
+                teacher = Teacher.objects.get(id=int(fav_id))
+                teacher.fav_nums -= 1
+                if teacher.fav_nums < 0:
+                    teacher.fav_nums = 0
+                teacher.save()
             return HttpResponse('{"status":"fail","msg1":"已取消收藏" ,"msg":"收藏"}', content_type='application/json')
         else:
             user_fav = UserFavorite()
@@ -197,6 +217,19 @@ class AddFavView(View):
                 user_fav.fav_id = int(fav_id)
                 user_fav.fav_type = int(fav_type)
                 user_fav.save()
+
+                if int(fav_type) == 1:
+                    course = Course.objects.get(id=int(fav_id))
+                    course.fav_nums += 1
+                    course.save()
+                elif int(fav_type) == 2:
+                    org = CourseOrg.objects.get(id=int(fav_id))
+                    org.fav_nums += 1
+                    org.save()
+                elif int(fav_type) == 3:
+                    teacher = Teacher.objects.get(id=int(fav_id))
+                    teacher.fav_nums += 1
+                    teacher.save()
                 return HttpResponse('{"status":"success", "msg":"已收藏"}', content_type='application/json')
             else:
                 return HttpResponse('{"status":"fail", "msg":"收藏出错"}', content_type='application/json')

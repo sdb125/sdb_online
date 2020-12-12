@@ -3,14 +3,16 @@ from django.urls import path, include, re_path
 from django.views.generic import TemplateView
 from django.views.static import serve
 from MxOnline.settings import MEDIA_ROOT
-from apps.users.views import LoginView, RegisterView, ActiveUserView, ForgetPwdView, ResetView, ModifyPwdView
-# from apps.organization.views import OrgView
+from apps.users.views import LoginView, RegisterView, ActiveUserView, ForgetPwdView, ResetView, ModifyPwdView, \
+    LogoutView,IndexView
+# from MxOnline.settings import STATIC_ROOT
+
 
 urlpatterns = [
     path('xadmin/', xadmin.site.urls),
     path('media/<path:path>',serve,{'document_root':MEDIA_ROOT}),
     path('ueditor/',include('DjangoUeditor.urls')),
-    path('', TemplateView.as_view(template_name='index.html'),name='index'),
+    path('', IndexView.as_view(),name='index'),
     # path('login/', TemplateView.as_view(template_name='login.html'),name='login'),
     path('login/',LoginView.as_view(),name = 'login'),     #修改login路由
     path('register/',RegisterView.as_view(),name = 'register'),
@@ -24,5 +26,13 @@ urlpatterns = [
     re_path(r'^media/(?P<path>.*)', serve, {"document_root": MEDIA_ROOT }),
     path("course/", include('apps.course.urls', namespace="course")),
     path("users/", include('apps.users.urls', namespace="users")),
+    path('logout/', LogoutView.as_view(), name="logout"),
+    # 静态文件
+    # re_path(r'^static/(?P<path>.*)', serve, {"document_root": STATICFILES_DIRS }),
 
 ]
+
+# # 全局404页面配置
+# handler404 = 'users.views.pag_not_found'
+# # 全局500页面配置
+# handler500 = 'users.views.page_error'

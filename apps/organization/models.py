@@ -25,6 +25,7 @@ class CourseOrg(models.Model):
     desc = models.TextField('机构描述')
     category = models.CharField(max_length=20, choices=ORG_CHOICES, verbose_name=u"机构类别", default="pxjg")
     click_nums = models.IntegerField('点击数',default=0)
+    tag = models.CharField('机构标签', max_length=10, default='全国知名')
     fav_nums = models.IntegerField('收藏数',default=0)
     students = models.IntegerField("学习人数", default=0)
     course_nums = models.IntegerField("课程数", default=0)
@@ -71,4 +72,6 @@ class Teacher(models.Model):
     def __str__(self):
         return "[{0}]的教师: {1}".format(self.org, self.name)
 
+    def get_course_nums(self):
+        return self.course_set.all().count()
 
